@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "target": "ES2023",
@@ -10,9 +9,10 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@/generated/*": ["generated/*"]
     }
   },
   "files": ["src/type.d.ts"],
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "generated/**/*"]
 }
