@@ -1,6 +1,7 @@
 import { env } from "@/lib/env";
 import logger from "@/lib/logger";
 import { swaggerDocs } from "@/lib/swagger";
+import { globalErrorHandler } from "@/middleware/error.middleware";
 import { enableAppMiddleware } from "@/middleware/server.middleware";
 import { apis } from "@/routes";
 import { apiRoute } from "@/types/routes/route";
@@ -14,6 +15,8 @@ enableAppMiddleware(server);
 server.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 server.use(apiRoute.index, apis);
+
+server.use(globalErrorHandler);
 
 const startServer = async () => {
   server.listen(env.PORT, () => {

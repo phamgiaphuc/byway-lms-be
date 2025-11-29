@@ -1,12 +1,14 @@
 import { DefaultRoute } from "@/types/routes/route";
 
 export interface AuthRoute extends Omit<DefaultRoute, "default"> {
-  login: string;
+  signIn: string;
+  signUp: string;
   register: string;
 }
 
 export const authRoute: AuthRoute = {
-  login: "/login",
+  signIn: "/sign-in",
+  signUp: "/sign-up",
   register: "/register",
   name: "Auth",
   index: "/auth",
