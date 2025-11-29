@@ -1,24 +1,64 @@
 paths:
-  /auth/status:
-    get:
+  /auth/sign-in:
+    post:
       tags:
         - Auth
-      summary: Check status
+      summary: Sign in
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReqSignIn"
       responses:
         200:
-          description: OK
+          description: Login successful
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ResAuthStatus"
+                $ref: "#/components/schemas/ResSignIn"
+        400:
+          description: Validation error
+        401:
+          description: Invalid credentials
+
 components:
   schemas:
-    ResAuthStatus:
+    ReqSignIn:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email address
+          example: user@example.com
+        password:
+          type: string
+          minLength: 6
+          description: User password (min 6 chars)
+          example: secret123
+    ResSignIn:
       type: object
       properties:
         message:
           type: string
+          example: "Login successful"
         success:
           type: boolean
-        code:
-          type: number
+          example: true
+        data:
+          type: object
+          properties:
+            accessToken:
+              type: string
+              description: JWT Access Token
+            user:
+              type: object
+              properties:
+                id:
+                  type: string
+                email:
+                  type: string

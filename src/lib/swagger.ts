@@ -2,7 +2,7 @@ import swaggerJSDoc from "swagger-jsdoc";
 
 const swaggerOptions: swaggerJSDoc.Options = {
   swaggerDefinition: {
-    myapi: "3.0.0",
+    openapi: "3.0.0",
     info: {
       title: "Byway LMS API",
       version: "1.0.0",
@@ -12,7 +12,11 @@ const swaggerOptions: swaggerJSDoc.Options = {
         url: "http://www.apache.org/licenses/LICENSE-2.0.html",
       },
     },
-    basePath: "/api",
+    servers: [
+      {
+        url: "/api",
+      },
+    ],
     tags: [
       { description: "Auth API", name: "Auth" },
       { description: "User API", name: "User" },
