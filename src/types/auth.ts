@@ -25,3 +25,11 @@ export const signUpSchema = z.object({
     name: z.string().min(1),
   }),
 });
+
+export const getVerificationSchema = z.object({
+  query: z.object({
+    userId: z.string(),
+  }),
+});
+
+export type GetVerificationQuery = z.infer<typeof getVerificationSchema>["query"];

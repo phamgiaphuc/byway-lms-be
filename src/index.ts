@@ -21,6 +21,7 @@ server.use(globalErrorHandler);
 const startServer = async () => {
   server.listen(env.PORT, () => {
     logger.info(`🚀 Server running at http://localhost:${env.PORT}`);
+    logger.info(`API docs running at http://localhost:${env.PORT}/docs`);
   });
 };
 startServer();

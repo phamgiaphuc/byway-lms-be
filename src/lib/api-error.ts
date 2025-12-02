@@ -22,6 +22,11 @@ export class ApiError extends Error {
       Error.captureStackTrace(this, this.constructor);
     }
   }
+
+  setErrors(errors: any[] = []) {
+    this.errors = errors;
+    return this;
+  }
 }
 
 export class BadRequestError extends ApiError {

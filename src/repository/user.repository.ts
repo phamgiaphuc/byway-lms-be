@@ -1,8 +1,18 @@
 import { CREDENTIALS_PROVIDER_ID } from "@/constants/account";
+import { VerificationCreateInput } from "@/generated/prisma/models";
 import { prisma } from "@/lib/prisma";
 import { SignUpBody } from "@/types/auth";
 
 class UserRepository {
+  async findUserById(id: string) {
+    return await prisma.user.findUnique({
+      where: { id },
+      include: {
+        accounts: true,
+      },
+    });
+  }
+
   async findUserByEmail(email: string) {
     return await prisma.user.findUnique({
       where: { email },
@@ -25,6 +35,12 @@ class UserRepository {
           },
         },
       },
+    });
+  }
+
+  async createVerification(verification: VerificationCreateInput) {
+    return await prisma.verification.create({
+      data: verification,
     });
   }
 }

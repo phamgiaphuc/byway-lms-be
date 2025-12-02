@@ -8,6 +8,7 @@ export const env = createEnv({
     NODE_ENV: z.string().default("development"),
     DATABASE_URL: z.string(),
     JWT_SECRET: z.string().default("secret"),
+    RESEND_API_KEY: z.string(),
   },
   runtimeEnv: process.env,
 });

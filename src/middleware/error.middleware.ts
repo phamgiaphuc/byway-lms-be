@@ -12,5 +12,5 @@ export const globalErrorHandler = (err: Error, _req: Request, res: Response, nex
     });
   }
 
-  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError());
+  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError().setErrors([err.message]));
 };

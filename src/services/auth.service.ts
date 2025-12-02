@@ -1,11 +1,50 @@
 import { CREDENTIALS_PROVIDER_ID } from "@/constants/account";
+import { ACCOUNT_VERIFIER_IDENTIFIER } from "@/constants/verification";
 import { env } from "@/lib/env";
+import { generateCustomCode } from "@/lib/helper";
+import { resend } from "@/lib/mail";
 import { userRepository } from "@/repository/user.repository";
 import { SignInBody, SignUpBody } from "@/types/auth";
 import * as bcrypt from "bcrypt";
+import { addMinutes } from "date-fns";
 import jwt from "jsonwebtoken";
 
 class AuthService {
+  async getVerification(userId: string) {
+    const result = await userRepository.findUserById(userId);
+    if (!result) {
+      throw new Error("User not found");
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { accounts, ...user } = result;
+
+    const verification = await userRepository.createVerification({
+      identifier: ACCOUNT_VERIFIER_IDENTIFIER,
+      value: generateCustomCode(6),
+      expiredAt: addMinutes(new Date(), 5),
+    });
+
+    await resend.emails.send({
+      to: user.email,
+      template: {
+        id: "welcome-user",
+        variables: {
+          NAME: user.name,
+          CODE: verification.value,
+        },
+      },
+    });
+
+    return {
+      user,
+      verification: {
+        id: verification.id,
+        expiredAt: verification.expiredAt,
+      },
+    };
+  }
+
   async signUp(body: SignUpBody) {
     const existingUser = await userRepository.findUserByEmail(body.email);
     if (existingUser) {
@@ -16,14 +55,38 @@ class AuthService {
     body.password = await bcrypt.hash(body.password, salt);
 
     const user = await userRepository.createUserWithAccount(body);
-    return user;
+
+    const verification = await userRepository.createVerification({
+      identifier: ACCOUNT_VERIFIER_IDENTIFIER,
+      value: generateCustomCode(6),
+      expiredAt: addMinutes(new Date(), 5),
+    });
+
+    await resend.emails.send({
+      to: user.email,
+      template: {
+        id: "welcome-user",
+        variables: {
+          NAME: user.name,
+          CODE: verification.value,
+        },
+      },
+    });
+
+    return {
+      user,
+      verification: {
+        id: verification.id,
+        expiredAt: verification.expiredAt,
+      },
+    };
   }
 
   async signIn(body: SignInBody) {
     const user = await userRepository.findUserByEmail(body.email);
 
     if (!user) {
-      throw new Error("Invalid credentials");
+      throw new Error("User not found");
     }
 
     const { accounts, ...rest } = user;
@@ -40,7 +103,11 @@ class AuthService {
       throw new Error("Invalid credentials");
     }
 
-    const token = jwt.sign({ userId: user.id, email: user.email }, env.JWT_SECRET, { expiresIn: "7d" });
+    if (!user.emailVerified) {
+      return { user: rest };
+    }
+
+    const token = jwt.sign({ id: user.id, email: user.email }, env.JWT_SECRET, { expiresIn: "7d" });
 
     return { user: rest, token };
   }

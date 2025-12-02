@@ -14,13 +14,12 @@ export const schemaValidation = (schema: ZodObject) => async (req: Request, res:
     if (error instanceof ZodError) {
       const { issues } = error;
       const errors = issues.map((e) => ({
-        field: e.path.join(".").replace("body.", ""),
+        field: e.path.join("."),
         message: e.message,
       }));
 
       return next(new BadRequestError("Validation error", errors));
     }
-
-    return next(new InternalServerError("Internal server error"));
+    return next(new InternalServerError("Internal server error", [error]));
   }
 };
