@@ -6,12 +6,6 @@ import { StatusCodes } from "http-status-codes";
 
 const router = Router();
 
-router.get(usersRoute.getUsers, async (_: Request, res: Response) => {
-  res.json({
-    users: [],
-  });
-});
-
 router.get(usersRoute.getMe, jwtMiddleware(), async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, { user: req.user }, "Get me successful"));
 });

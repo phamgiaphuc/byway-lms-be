@@ -13,6 +13,25 @@ class UserRepository {
     });
   }
 
+  async updateUserVerifiedById(id: string, status: boolean) {
+    return await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        emailVerified: status,
+      },
+    });
+  }
+
+  async findVerificationById(id: string) {
+    return await prisma.verification.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
+
   async findUserByEmail(email: string) {
     return await prisma.user.findUnique({
       where: { email },

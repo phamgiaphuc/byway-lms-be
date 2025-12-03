@@ -19,7 +19,7 @@ const swaggerOptions: swaggerJSDoc.Options = {
     ],
     tags: [
       { description: "Auth API", name: "Auth" },
-      { description: "User API", name: "User" },
+      { description: "Users API", name: "Users" },
     ],
     components: {
       securitySchemes: {

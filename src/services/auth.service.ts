@@ -1,5 +1,6 @@
 import { CREDENTIALS_PROVIDER_ID } from "@/constants/account";
 import { ACCOUNT_VERIFIER_IDENTIFIER } from "@/constants/verification";
+import { BadRequestError } from "@/lib/api-error";
 import { env } from "@/lib/env";
 import { generateCustomCode } from "@/lib/helper";
 import { resend } from "@/lib/mail";
@@ -10,6 +11,21 @@ import { addMinutes } from "date-fns";
 import jwt from "jsonwebtoken";
 
 class AuthService {
+  async postVerification(userId: string, verificationId: string, code: string) {
+    const verification = await userRepository.findVerificationById(verificationId);
+    if (!verification) {
+      throw new BadRequestError("Verification not found");
+    }
+
+    if (verification.value !== code) {
+      throw new BadRequestError("Code not match");
+    }
+
+    await userRepository.updateUserVerifiedById(userId, true);
+
+    return {};
+  }
+
   async getVerification(userId: string) {
     const result = await userRepository.findUserById(userId);
     if (!result) {
@@ -48,7 +64,7 @@ class AuthService {
   async signUp(body: SignUpBody) {
     const existingUser = await userRepository.findUserByEmail(body.email);
     if (existingUser) {
-      throw new Error("User already exists");
+      throw new BadRequestError("User already exists");
     }
 
     const salt = await bcrypt.genSalt(10);

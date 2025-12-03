@@ -32,4 +32,15 @@ export const getVerificationSchema = z.object({
   }),
 });
 
-export type GetVerificationQuery = z.infer<typeof getVerificationSchema>["query"];
+export const postVerificationSchema = z.object({
+  query: z.object({
+    userId: z.string(),
+    verificationId: z.string(),
+  }),
+  body: z.object({
+    code: z.string(),
+  }),
+});
+
+export type GetVerification = z.infer<typeof getVerificationSchema>;
+export type PostVerification = z.infer<typeof postVerificationSchema>;

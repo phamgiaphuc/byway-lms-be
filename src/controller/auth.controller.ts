@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/lib/api-response";
 import { authService } from "@/services/auth.service";
-import { GetVerificationQuery } from "@/types/auth";
+import { GetVerification, PostVerification } from "@/types/auth";
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
@@ -17,7 +17,7 @@ class AuthController {
   async signIn(req: Request, res: Response, next: NextFunction) {
     try {
       const response = await authService.signIn(req.body);
-      res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, response, "Sign in successful"));
+      res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, { ...response }, "Sign in successful"));
     } catch (error) {
       next(error);
     }
@@ -25,11 +25,21 @@ class AuthController {
 
   async getVerification(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId } = req.query as GetVerificationQuery;
+      const { userId } = req.query as GetVerification["query"];
       const response = await authService.getVerification(userId);
-      res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, response, "Get verification"));
+      res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, { ...response }, "Get verification"));
     } catch (error) {
-      console.log(error);
+      next(error);
+    }
+  }
+
+  async postVerification(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { userId, verificationId } = req.query as PostVerification["query"];
+      const { code } = req.body as PostVerification["body"];
+      const response = await authService.postVerification(userId, verificationId, code);
+      res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, { ...response }, "Verify success"));
+    } catch (error) {
       next(error);
     }
   }
