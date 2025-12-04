@@ -1,6 +1,6 @@
 import { CREDENTIALS_PROVIDER_ID, GOOGLE_PROVIDER_ID } from "@/constants/account";
-import { User } from "@/generated/prisma/client";
-import { VerificationCreateInput } from "@/generated/prisma/models";
+import { User } from "@/lib/generated/prisma/client";
+import { VerificationCreateInput } from "@/lib/generated/prisma/models";
 import { prisma } from "@/lib/prisma";
 import { GoogleProfile, SignUpBody } from "@/types/auth";
 

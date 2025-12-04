@@ -41,10 +41,6 @@ const router = Router();
  *                       $ref: "#/components/schemas/User"
  *       401:
  *         description: Unauthorized - missing or invalid token
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/UnauthorizedError"
  */
 router.get(usersRoute.getMe, jwtMiddleware(), async (req: Request, res: Response) => {
   res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, { user: req.user }, "Get me successful"));
