@@ -1,4 +1,4 @@
-import { CREDENTIALS_PROVIDER_ID } from "@/constants/account";
+import { CREDENTIALS_PROVIDER_ID, GOOGLE_PROVIDER_ID } from "@/constants/account";
 import { ACCOUNT_VERIFIER_IDENTIFIER } from "@/constants/verification";
 import { BadRequestError } from "@/lib/api-error";
 import { env } from "@/lib/env";
@@ -17,19 +17,25 @@ class AuthService {
     if (!profile.email) {
       throw new BadRequestError("Email is invalid");
     }
+
     const googleProfile: GoogleProfile = {
       ...profile,
       email: profile.email,
     };
+
     let user = await userRepository.findUserByEmail(googleProfile.email);
+
     if (!user) {
-      const profile = await userRepository.createUserWithGoogleAccount(googleProfile);
-      user = {
-        ...profile,
-        accounts: [],
-      };
+      user = await userRepository.createUserWithGoogleAccount(googleProfile);
     }
+
+    if (!user.accounts.find((acc) => acc.providerId === GOOGLE_PROVIDER_ID)) {
+      const account = await userRepository.createGoogleAccount(user, googleProfile);
+      user.accounts.push(account);
+    }
+
     const token = jwt.sign({ id: user.id, email: user.email }, env.JWT_SECRET, { expiresIn: "7d" });
+
     return { user: omit(user, ["accounts"]), token };
   }
 

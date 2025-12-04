@@ -38,12 +38,10 @@ export const getVerificationSchema = z.object({
 });
 
 export const postVerificationSchema = z.object({
-  query: z.object({
-    userId: z.string(),
-    verificationId: z.string(),
-  }),
   body: z.object({
     code: z.string(),
+    userId: z.string(),
+    verificationId: z.string(),
   }),
 });
 

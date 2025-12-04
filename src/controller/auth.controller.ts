@@ -36,8 +36,7 @@ class AuthController {
 
   async postVerification(req: Request, res: Response, next: NextFunction) {
     try {
-      const { userId, verificationId } = req.query as PostVerification["query"];
-      const { code } = req.body as PostVerification["body"];
+      const { code, userId, verificationId } = req.body as PostVerification["body"];
       const response = await authService.postVerification(userId, verificationId, code);
       res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, { ...response }, "Verify success"));
     } catch (error) {

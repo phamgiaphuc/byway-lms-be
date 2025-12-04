@@ -17,10 +17,6 @@ const swaggerOptions: swaggerJSDoc.Options = {
         url: "/api",
       },
     ],
-    tags: [
-      { description: "Auth API", name: "Auth" },
-      { description: "Users API", name: "Users" },
-    ],
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -30,13 +26,8 @@ const swaggerOptions: swaggerJSDoc.Options = {
         },
       },
     },
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ],
   },
-  apis: ["src/lib/docs/**/*.yaml"],
+  apis: ["src/routes/**/*.ts"],
 };
 
 export const swaggerDocs = swaggerJSDoc(swaggerOptions);

@@ -1,4 +1,5 @@
 import { CREDENTIALS_PROVIDER_ID, GOOGLE_PROVIDER_ID } from "@/constants/account";
+import { User } from "@/generated/prisma/client";
 import { VerificationCreateInput } from "@/generated/prisma/models";
 import { prisma } from "@/lib/prisma";
 import { GoogleProfile, SignUpBody } from "@/types/auth";
@@ -54,6 +55,9 @@ class UserRepository {
           },
         },
       },
+      include: {
+        accounts: true,
+      },
     });
   }
 
@@ -70,6 +74,19 @@ class UserRepository {
             providerId: GOOGLE_PROVIDER_ID,
           },
         },
+      },
+      include: {
+        accounts: true,
+      },
+    });
+  }
+
+  async createGoogleAccount(user: User, profile: GoogleProfile) {
+    return await prisma.account.create({
+      data: {
+        userId: user.id,
+        accountId: profile.sub,
+        providerId: GOOGLE_PROVIDER_ID,
       },
     });
   }
