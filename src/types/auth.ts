@@ -1,3 +1,4 @@
+import { Profile } from "passport-google-oauth20";
 import z from "zod";
 
 export interface SignInBody {
@@ -10,6 +11,10 @@ export interface SignUpBody {
   password: string;
   name: string;
 }
+
+export type GoogleProfile = Profile["_json"] & {
+  email: string;
+};
 
 export const signInSchema = z.object({
   body: z.object({

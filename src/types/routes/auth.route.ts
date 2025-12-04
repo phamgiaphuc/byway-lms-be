@@ -4,12 +4,14 @@ export interface AuthRoute extends Omit<DefaultRoute, "default"> {
   signIn: string;
   signUp: string;
   verify: string;
+  google: string;
 }
 
 export const authRoute: AuthRoute = {
   signIn: "/sign-in",
   signUp: "/sign-up",
   verify: "/verify",
+  google: "/google",
   name: "Auth",
   index: "/auth",
   status: "/status",

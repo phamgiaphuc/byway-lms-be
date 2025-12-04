@@ -1,7 +1,7 @@
-import { CREDENTIALS_PROVIDER_ID } from "@/constants/account";
+import { CREDENTIALS_PROVIDER_ID, GOOGLE_PROVIDER_ID } from "@/constants/account";
 import { VerificationCreateInput } from "@/generated/prisma/models";
 import { prisma } from "@/lib/prisma";
-import { SignUpBody } from "@/types/auth";
+import { GoogleProfile, SignUpBody } from "@/types/auth";
 
 class UserRepository {
   async findUserById(id: string) {
@@ -41,7 +41,7 @@ class UserRepository {
     });
   }
 
-  async createUserWithAccount(data: SignUpBody) {
+  async createUserWithCredentialsAccount(data: SignUpBody) {
     return await prisma.user.create({
       data: {
         name: data.name,
@@ -51,6 +51,23 @@ class UserRepository {
           create: {
             providerId: CREDENTIALS_PROVIDER_ID,
             password: data.password,
+          },
+        },
+      },
+    });
+  }
+
+  async createUserWithGoogleAccount(profile: GoogleProfile) {
+    return await prisma.user.create({
+      data: {
+        name: `${profile.given_name} ${profile.given_name}`,
+        email: profile.email,
+        image: `https://ui-avatars.com/api/?name=${encodeURIComponent(`${profile.given_name} ${profile.given_name}`)}`,
+        emailVerified: profile.email_verified,
+        accounts: {
+          create: {
+            accountId: profile.sub,
+            providerId: GOOGLE_PROVIDER_ID,
           },
         },
       },

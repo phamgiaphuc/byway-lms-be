@@ -5,6 +5,7 @@ import { getVerificationSchema, postVerificationSchema, signInSchema, signUpSche
 import { authRoute } from "@/types/routes/auth.route";
 import { Request, Router, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import passport from "passport";
 
 const router = Router();
 
@@ -19,5 +20,23 @@ router.post(authRoute.signUp, schemaValidation(signUpSchema), authController.sig
 router.get(authRoute.verify, schemaValidation(getVerificationSchema), authController.getVerification);
 
 router.post(authRoute.verify, schemaValidation(postVerificationSchema), authController.getVerification);
+
+router.get(
+  authRoute.google,
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    session: false,
+  }),
+);
+
+router.get(
+  `${authRoute.google}/callback`,
+  passport.authenticate("google", {
+    failureRedirect: "/sign-in",
+    session: false,
+    failureMessage: "Failed to sign in with Google",
+  }),
+  authController.googleAuth,
+);
 
 export const authRoutes = router;

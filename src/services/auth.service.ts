@@ -5,12 +5,34 @@ import { env } from "@/lib/env";
 import { generateCustomCode } from "@/lib/helper";
 import { resend } from "@/lib/mail";
 import { userRepository } from "@/repository/user.repository";
-import { SignInBody, SignUpBody } from "@/types/auth";
+import { GoogleProfile, SignInBody, SignUpBody } from "@/types/auth";
 import * as bcrypt from "bcrypt";
 import { addMinutes } from "date-fns";
 import jwt from "jsonwebtoken";
+import { Profile } from "passport-google-oauth20";
+import { omit } from "lodash";
 
 class AuthService {
+  async googleAuth(profile: Profile["_json"]) {
+    if (!profile.email) {
+      throw new BadRequestError("Email is invalid");
+    }
+    const googleProfile: GoogleProfile = {
+      ...profile,
+      email: profile.email,
+    };
+    let user = await userRepository.findUserByEmail(googleProfile.email);
+    if (!user) {
+      const profile = await userRepository.createUserWithGoogleAccount(googleProfile);
+      user = {
+        ...profile,
+        accounts: [],
+      };
+    }
+    const token = jwt.sign({ id: user.id, email: user.email }, env.JWT_SECRET, { expiresIn: "7d" });
+    return { user: omit(user, ["accounts"]), token };
+  }
+
   async postVerification(userId: string, verificationId: string, code: string) {
     const verification = await userRepository.findVerificationById(verificationId);
     if (!verification) {
@@ -27,13 +49,10 @@ class AuthService {
   }
 
   async getVerification(userId: string) {
-    const result = await userRepository.findUserById(userId);
-    if (!result) {
+    const user = await userRepository.findUserById(userId);
+    if (!user) {
       throw new Error("User not found");
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { accounts, ...user } = result;
 
     const verification = await userRepository.createVerification({
       identifier: ACCOUNT_VERIFIER_IDENTIFIER,
@@ -53,7 +72,7 @@ class AuthService {
     });
 
     return {
-      user,
+      user: omit(user, ["accounts"]),
       verification: {
         id: verification.id,
         expiredAt: verification.expiredAt,
@@ -70,7 +89,7 @@ class AuthService {
     const salt = await bcrypt.genSalt(10);
     body.password = await bcrypt.hash(body.password, salt);
 
-    const user = await userRepository.createUserWithAccount(body);
+    const user = await userRepository.createUserWithCredentialsAccount(body);
 
     const verification = await userRepository.createVerification({
       identifier: ACCOUNT_VERIFIER_IDENTIFIER,

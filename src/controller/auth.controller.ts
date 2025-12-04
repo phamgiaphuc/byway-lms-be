@@ -3,6 +3,7 @@ import { authService } from "@/services/auth.service";
 import { GetVerification, PostVerification } from "@/types/auth";
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import { Profile } from "passport-google-oauth20";
 
 class AuthController {
   async signUp(req: Request, res: Response, next: NextFunction) {
@@ -39,6 +40,17 @@ class AuthController {
       const { code } = req.body as PostVerification["body"];
       const response = await authService.postVerification(userId, verificationId, code);
       res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, { ...response }, "Verify success"));
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async googleAuth(req: Request, res: Response, next: NextFunction) {
+    try {
+      const response = await authService.googleAuth(req.user as Profile["_json"]);
+      res
+        .status(StatusCodes.OK)
+        .json(new ApiResponse(StatusCodes.OK, { ...response }, "Sign in with Google successful"));
     } catch (error) {
       next(error);
     }

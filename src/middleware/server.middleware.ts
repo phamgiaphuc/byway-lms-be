@@ -1,6 +1,7 @@
 import compression from "compression";
 import express, { Express } from "express";
 import cors from "cors";
+import passport from "@/lib/passport";
 
 export const enableAppMiddleware = (server: Express) => {
   server.use(express.json());
@@ -11,4 +12,5 @@ export const enableAppMiddleware = (server: Express) => {
       origin: "*",
     }),
   );
+  server.use(passport.initialize());
 };
