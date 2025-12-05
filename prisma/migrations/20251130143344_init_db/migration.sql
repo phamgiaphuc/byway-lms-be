@@ -16,25 +16,11 @@ CREATE TABLE "user" (
 CREATE TABLE "account" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "accountId" TEXT NOT NULL,
+    "accountId" TEXT,
     "providerId" TEXT NOT NULL,
     "password" TEXT,
 
     CONSTRAINT "account_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "session" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "token" TEXT NOT NULL,
-    "expiredAt" TIMESTAMP(3) NOT NULL,
-    "ipAddress" TEXT NOT NULL,
-    "userAgent" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "session_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -57,6 +43,3 @@ CREATE UNIQUE INDEX "account_userId_providerId_key" ON "account"("userId", "prov
 
 -- AddForeignKey
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;

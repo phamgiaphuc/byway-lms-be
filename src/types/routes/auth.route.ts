@@ -3,13 +3,15 @@ import { DefaultRoute } from "@/types/routes/route";
 export interface AuthRoute extends Omit<DefaultRoute, "default"> {
   signIn: string;
   signUp: string;
-  register: string;
+  verify: string;
+  google: string;
 }
 
 export const authRoute: AuthRoute = {
   signIn: "/sign-in",
   signUp: "/sign-up",
-  register: "/register",
+  verify: "/verify",
+  google: "/google",
   name: "Auth",
   index: "/auth",
   status: "/status",

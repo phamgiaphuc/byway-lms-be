@@ -1,6 +1,8 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider     = "prisma-client"
+  engineType   = "client"
+  output       = "../src/lib/generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -16,48 +18,47 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
+  role          String    @default("user")
 
   accounts Account[]
   sessions Session[]
 
-  @@map("user")
+  @@map("users")
 }
 
 model Account {
   id         String  @id @default(uuid())
   userId     String
-  accountId  String
+  accountId  String?
   providerId String
   password   String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, providerId])
-  @@map("account")
-}
-
-model Session {
-  id        String   @id @default(uuid())
-  userId    String
-  token     String
-  expiredAt DateTime
-  ipAddress String
-  userAgent String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("session")
+  @@map("accounts")
 }
 
 model Verification {
-  id         String   @id
+  id         String   @id @default(uuid())
   identifier String
   value      String
   expiredAt  DateTime
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  @@map("verification")
+  @@map("verifications")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  ipAddress String
+  userAgent String
+  expiredAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
 }

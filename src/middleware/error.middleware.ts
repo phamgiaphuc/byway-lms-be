@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ApiError, InternalServerError } from "@/lib/api-error";
+import { ApiError } from "@/lib/api-error";
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 
@@ -12,5 +12,9 @@ export const globalErrorHandler = (err: Error, _req: Request, res: Response, nex
     });
   }
 
-  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(new InternalServerError());
+  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    success: "failed",
+    message: err.message,
+    errors: [],
+  });
 };
