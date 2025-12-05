@@ -34,6 +34,11 @@ class AuthService {
       user.accounts.push(account);
     }
 
+    if (!user.emailVerified) {
+      await userRepository.updateUserVerifiedById(user.id, true);
+      user.emailVerified = true;
+    }
+
     const token = jwt.sign({ id: user.id, email: user.email }, env.JWT_SECRET, { expiresIn: "7d" });
 
     return { user: omit(user, ["accounts"]), token };

@@ -52,3 +52,8 @@ export type Account = Prisma.AccountModel
  * 
  */
 export type Verification = Prisma.VerificationModel
+/**
+ * Model Session
+ * 
+ */
+export type Session = Prisma.SessionModel

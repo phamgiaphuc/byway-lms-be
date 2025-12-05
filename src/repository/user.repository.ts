@@ -1,6 +1,6 @@
 import { CREDENTIALS_PROVIDER_ID, GOOGLE_PROVIDER_ID } from "@/constants/account";
 import { User } from "@/lib/generated/prisma/client";
-import { VerificationCreateInput } from "@/lib/generated/prisma/models";
+import { SessionCreateInput, VerificationCreateInput } from "@/lib/generated/prisma/models";
 import { prisma } from "@/lib/prisma";
 import { GoogleProfile, SignUpBody } from "@/types/auth";
 
@@ -94,6 +94,12 @@ class UserRepository {
   async createVerification(verification: VerificationCreateInput) {
     return await prisma.verification.create({
       data: verification,
+    });
+  }
+
+  async createSession(session: SessionCreateInput) {
+    return await prisma.session.create({
+      data: session,
     });
   }
 }
