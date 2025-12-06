@@ -57,3 +57,18 @@ export type Verification = Prisma.VerificationModel
  * 
  */
 export type Session = Prisma.SessionModel
+/**
+ * Model Category
+ * 
+ */
+export type Category = Prisma.CategoryModel
+/**
+ * Model Course
+ * 
+ */
+export type Course = Prisma.CourseModel
+/**
+ * Model CourseCategory
+ * 
+ */
+export type CourseCategory = Prisma.CourseCategoryModel
