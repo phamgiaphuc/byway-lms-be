@@ -1,7 +1,7 @@
 import { authController } from "@/controller/auth.controller";
 import { ApiResponse } from "@/lib/api-response";
 import { schemaValidation } from "@/middleware/validation.middleware";
-import { getVerificationSchema, postVerificationSchema, signInSchema, signUpSchema } from "@/types/auth";
+import { sendVerificationSchema, postVerificationSchema, signInSchema, signUpSchema } from "@/types/auth";
 import { authRoute } from "@/types/routes/auth.route";
 import { Request, Router, Response } from "express";
 import { StatusCodes } from "http-status-codes";
@@ -85,16 +85,19 @@ router.post(authRoute.signUp, schemaValidation(signUpSchema), authController.sig
 
 /**
  * @swagger
- * /auth/verify:
- *   get:
+ * /auth/send-verification:
+ *   post:
  *     tags: [Auth]
- *     summary: Get verification details
- *     parameters:
- *       - in: query
- *         name: userId
- *         required: true
- *         schema:
- *           type: string
+ *     summary: Send verification code
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Verification fetched
@@ -103,7 +106,7 @@ router.post(authRoute.signUp, schemaValidation(signUpSchema), authController.sig
  *             schema:
  *               $ref: "#/components/schemas/ApiResponse"
  */
-router.get(authRoute.verify, schemaValidation(getVerificationSchema), authController.getVerification);
+router.post(authRoute.sendVerification, schemaValidation(sendVerificationSchema), authController.sendVerification);
 
 /**
  * @swagger
@@ -132,7 +135,7 @@ router.get(authRoute.verify, schemaValidation(getVerificationSchema), authContro
  *             schema:
  *               $ref: "#/components/schemas/ApiResponse"
  */
-router.post(authRoute.verify, schemaValidation(postVerificationSchema), authController.getVerification);
+router.post(authRoute.verify, schemaValidation(postVerificationSchema), authController.postVerification);
 
 /**
  * @swagger

@@ -11,7 +11,6 @@ export const globalErrorHandler = (err: Error, _req: Request, res: Response, nex
       errors: err.errors,
     });
   }
-
   return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     success: "failed",
     message: err.message,

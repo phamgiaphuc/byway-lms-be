@@ -1,6 +1,6 @@
 import { CREDENTIALS_PROVIDER_ID, GOOGLE_PROVIDER_ID } from "@/constants/account";
 import { ACCOUNT_VERIFIER_IDENTIFIER } from "@/constants/verification";
-import { BadRequestError } from "@/lib/api-error";
+import { BadRequestError, UnauthorizedError } from "@/lib/api-error";
 import { env } from "@/lib/env";
 import { generateCustomCode } from "@/lib/helper";
 import { resend } from "@/lib/mail";
@@ -54,15 +54,21 @@ class AuthService {
       throw new BadRequestError("Code not match");
     }
 
-    await userRepository.updateUserVerifiedById(userId, true);
+    const user = await userRepository.updateUserVerifiedById(userId, true);
 
-    return {};
+    const token = jwt.sign({ id: user.id, email: user.email }, env.JWT_SECRET, { expiresIn: "7d" });
+
+    return { user, token };
   }
 
-  async getVerification(userId: string) {
+  async sendVerification(userId: string) {
     const user = await userRepository.findUserById(userId);
     if (!user) {
-      throw new Error("User not found");
+      throw new BadRequestError("User not found");
+    }
+
+    if (user.emailVerified) {
+      throw new BadRequestError("User is already verified");
     }
 
     const verification = await userRepository.createVerification({
@@ -83,11 +89,8 @@ class AuthService {
     });
 
     return {
-      user: omit(user, ["accounts"]),
-      verification: {
-        id: verification.id,
-        expiredAt: verification.expiredAt,
-      },
+      id: verification.id,
+      expiredAt: verification.expiredAt,
     };
   }
 
@@ -140,13 +143,13 @@ class AuthService {
     const credentialsAccount = accounts.find((acc) => acc.providerId === CREDENTIALS_PROVIDER_ID);
 
     if (!credentialsAccount || !credentialsAccount.password) {
-      throw new Error("Invalid credentials");
+      throw new UnauthorizedError("Invalid credentials");
     }
 
     const isPasswordValid = await bcrypt.compare(body.password, credentialsAccount.password);
 
     if (!isPasswordValid) {
-      throw new Error("Invalid credentials");
+      throw new UnauthorizedError("Invalid credentials");
     }
 
     if (!user.emailVerified) {

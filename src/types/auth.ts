@@ -1,3 +1,4 @@
+import { JwtPayload } from "jsonwebtoken";
 import { Profile } from "passport-google-oauth20";
 import z from "zod";
 
@@ -16,10 +17,15 @@ export type GoogleProfile = Profile["_json"] & {
   email: string;
 };
 
+export type UserPayload = JwtPayload & {
+  id: string;
+  email: string;
+};
+
 export const signInSchema = z.object({
   body: z.object({
     email: z.email(),
-    password: z.string().min(6),
+    password: z.string().min(1),
   }),
 });
 
@@ -31,8 +37,8 @@ export const signUpSchema = z.object({
   }),
 });
 
-export const getVerificationSchema = z.object({
-  query: z.object({
+export const sendVerificationSchema = z.object({
+  body: z.object({
     userId: z.string(),
   }),
 });
@@ -45,5 +51,5 @@ export const postVerificationSchema = z.object({
   }),
 });
 
-export type GetVerification = z.infer<typeof getVerificationSchema>;
+export type SendVerification = z.infer<typeof sendVerificationSchema>;
 export type PostVerification = z.infer<typeof postVerificationSchema>;

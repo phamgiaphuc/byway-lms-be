@@ -5,6 +5,12 @@ import { prisma } from "@/lib/prisma";
 import { GoogleProfile, SignUpBody } from "@/types/auth";
 
 class UserRepository {
+  async findUserProfileById(id: string) {
+    return await prisma.user.findUnique({
+      where: { id },
+    });
+  }
+
   async findUserById(id: string) {
     return await prisma.user.findUnique({
       where: { id },

@@ -1,8 +1,7 @@
-import { ApiResponse } from "@/lib/api-response";
+import { userController } from "@/controller/user.controller";
 import { jwtMiddleware } from "@/middleware/auth.middleware";
 import { usersRoute } from "@/types/routes/users.route";
-import { Request, Response, Router } from "express";
-import { StatusCodes } from "http-status-codes";
+import { Router } from "express";
 
 /**
  * @swagger
@@ -42,8 +41,6 @@ const router = Router();
  *       401:
  *         description: Unauthorized - missing or invalid token
  */
-router.get(usersRoute.getMe, jwtMiddleware(), async (req: Request, res: Response) => {
-  res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, { user: req.user }, "Get me successful"));
-});
+router.get(usersRoute.getMe, jwtMiddleware(), userController.getUserProfile);
 
 export const userRoutes = router;
