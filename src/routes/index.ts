@@ -1,6 +1,8 @@
 import { authRoutes } from "@/routes/auth.route";
+import { fileRoutes } from "@/routes/file.route";
 import { userRoutes } from "@/routes/users.route";
 import { authRoute } from "@/types/routes/auth.route";
+import { filesRoute } from "@/types/routes/file.route";
 import { Route } from "@/types/routes/route";
 import { usersRoute } from "@/types/routes/users.route";
 import { Router } from "express";
@@ -15,6 +17,10 @@ const routes: Route[] = [
   {
     index: usersRoute.index,
     routes: userRoutes,
+  },
+  {
+    index: filesRoute.index,
+    routes: fileRoutes,
   },
 ];
 
