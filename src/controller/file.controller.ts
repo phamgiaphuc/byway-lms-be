@@ -35,9 +35,7 @@ class FileController {
         results.push(uploaded);
       }
 
-      res
-        .status(StatusCodes.OK)
-        .json(new ApiResponse(StatusCodes.OK, { files: results }, "Upload multiple files successful"));
+      res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, results, "Upload multiple files successful"));
     } catch (error) {
       next(error);
     }

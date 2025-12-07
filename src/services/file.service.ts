@@ -5,7 +5,7 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 class FileService {
   async uploadFile(file: Express.Multer.File, folder: string = "uploads") {
     const ext = file.originalname.split(".").pop();
-    const fileName = crypto.randomUUID() + "." + ext;
+    const fileName = `${Date.now()}${Math.floor(performance.now())}.${ext}`;
 
     const basePath = "byway-lms";
     const finalPath = `${basePath}/${folder}/${fileName}`;
@@ -21,7 +21,7 @@ class FileService {
 
     return {
       ext,
-      fileName,
+      name: fileName,
       url: `${env.R2_PUBLIC_DOMAIN}/${finalPath}`,
     };
   }

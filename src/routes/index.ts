@@ -1,7 +1,9 @@
 import { authRoutes } from "@/routes/auth.route";
+import { categoryRoutes } from "@/routes/category.route";
 import { fileRoutes } from "@/routes/file.route";
 import { userRoutes } from "@/routes/users.route";
 import { authRoute } from "@/types/routes/auth.route";
+import { categoryRoute } from "@/types/routes/category.route";
 import { filesRoute } from "@/types/routes/file.route";
 import { Route } from "@/types/routes/route";
 import { usersRoute } from "@/types/routes/users.route";
@@ -17,6 +19,10 @@ const routes: Route[] = [
   {
     index: usersRoute.index,
     routes: userRoutes,
+  },
+  {
+    index: categoryRoute.index,
+    routes: categoryRoutes,
   },
   {
     index: filesRoute.index,

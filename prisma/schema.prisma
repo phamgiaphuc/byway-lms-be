@@ -68,10 +68,12 @@ model Category {
   id               String           @id @default(uuid())
   name             String           @unique
   slug             String           @unique
-  image            String
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
   courseCategories CourseCategory[]
+  imageId          String
+
+  image File @relation(fields: [imageId], references: [id])
 
   @@map("categories")
 }
@@ -102,4 +104,16 @@ model CourseCategory {
   category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@unique([courseId, categoryId])
+  @@map("courses_categories")
+}
+
+model File {
+  id   String @id @default(uuid())
+  name String
+  ext  String
+  url  String
+
+  categories Category[]
+
+  @@map("files")
 }
