@@ -1,5 +1,5 @@
 import { categoryRepository } from "@/repository/category.repository";
-import { CreateCategorySchema } from "@/types/category";
+import { CreateCategorySchema, UpdateCategoryByIdSchema } from "@/types/category";
 
 class CategoryService {
   async createCategory(body: CreateCategorySchema["body"]) {
@@ -27,6 +27,19 @@ class CategoryService {
   async getCategories() {
     const categories = await categoryRepository.getCategories();
     return categories;
+  }
+
+  async updateCategoryById(id: string, body: UpdateCategoryByIdSchema["body"]) {
+    const { name, image } = body;
+    const slug = await categoryRepository.generateUniqueSlug(name, id);
+    const category = await categoryRepository.updateCategoryById(id, {
+      name: name,
+      slug: slug,
+      image: {
+        update: image,
+      },
+    });
+    return category;
   }
 }
 

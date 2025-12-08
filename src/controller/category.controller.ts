@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/lib/api-response";
 import { categoryService } from "@/services/category.service";
-import { CreateCategorySchema, GetCategoryBySlugSchema } from "@/types/category";
+import { CreateCategorySchema, GetCategoryBySlugSchema, UpdateCategoryByIdSchema } from "@/types/category";
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
@@ -33,6 +33,19 @@ class CategoryController {
       res
         .status(StatusCodes.OK)
         .json(new ApiResponse(StatusCodes.OK, { ...category }, "Get category by slug successful"));
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateCategoryById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const params = req.params as UpdateCategoryByIdSchema["params"];
+      const body = req.body as UpdateCategoryByIdSchema["body"];
+
+      const category = await categoryService.updateCategoryById(params.id, body);
+
+      res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, { ...category }, "Update category successful"));
     } catch (error) {
       next(error);
     }
