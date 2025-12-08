@@ -11,7 +11,7 @@ class FileController {
       if (!file) {
         throw new BadRequestError("No file uploaded");
       }
-      const response = fileService.uploadFile(file, req.body?.folder);
+      const response = await fileService.uploadFile(file, req.body?.folder);
 
       res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, { ...response }, "Upload file successful"));
     } catch (error) {

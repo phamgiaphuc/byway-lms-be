@@ -1,3 +1,5 @@
-export const USER_ROLE = "user";
-export const ADMIN_ROLE = "admin";
-export const INSTRUCTOR_ROLE = "instructor";
+import { Role } from "@/types/user";
+
+export const USER_ROLE: Role = "user";
+export const ADMIN_ROLE: Role = "admin";
+export const INSTRUCTOR_ROLE: Role = "instructor";

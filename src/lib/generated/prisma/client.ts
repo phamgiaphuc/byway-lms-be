@@ -72,3 +72,8 @@ export type Course = Prisma.CourseModel
  * 
  */
 export type CourseCategory = Prisma.CourseCategoryModel
+/**
+ * Model File
+ * 
+ */
+export type File = Prisma.FileModel
