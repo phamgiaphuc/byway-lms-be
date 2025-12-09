@@ -132,6 +132,8 @@ class AuthService {
   }
 
   async signIn(body: SignInBody) {
+    console.log(body);
+
     const user = await userRepository.findUserByEmail(body.email);
 
     if (!user) {
