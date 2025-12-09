@@ -5,11 +5,13 @@ export interface CategoryRoute extends Omit<DefaultRoute, "default"> {
   createCategory: string;
   getCategoryBySlug: string;
   updateCategoryById: string;
+  deleteCategories: string;
 }
 
 export const categoryRoute: CategoryRoute = {
   getCategories: "/",
   createCategory: "/",
+  deleteCategories: "/",
   getCategoryBySlug: "/:slug",
   updateCategoryById: "/:id",
   name: "Category",

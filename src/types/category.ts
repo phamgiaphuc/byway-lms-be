@@ -28,8 +28,24 @@ export const updateCategoryByIdSchema = z.object({
   }),
 });
 
+export const getCategoriesSchema = z.object({
+  query: z.object({
+    keyword: z.string().optional(),
+  }),
+});
+
+export const deleteCategoriesSchema = z.object({
+  body: z.object({
+    ids: z.array(z.string()),
+  }),
+});
+
 export type CreateCategorySchema = z.infer<typeof createCategorySchema>;
 
 export type GetCategoryBySlugSchema = z.infer<typeof getCategoryBySlugSchema>;
 
 export type UpdateCategoryByIdSchema = z.infer<typeof updateCategoryByIdSchema>;
+
+export type GetCategoriesSchema = z.infer<typeof getCategoriesSchema>;
+
+export type DeleteCategoriesSchema = z.infer<typeof deleteCategoriesSchema>;

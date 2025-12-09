@@ -1,5 +1,5 @@
 import { categoryRepository } from "@/repository/category.repository";
-import { CreateCategorySchema, UpdateCategoryByIdSchema } from "@/types/category";
+import { CreateCategorySchema, GetCategoriesSchema, UpdateCategoryByIdSchema } from "@/types/category";
 
 class CategoryService {
   async createCategory(body: CreateCategorySchema["body"]) {
@@ -24,8 +24,8 @@ class CategoryService {
     return category;
   }
 
-  async getCategories() {
-    const categories = await categoryRepository.getCategories();
+  async getCategories(query: GetCategoriesSchema["query"]) {
+    const categories = await categoryRepository.getCategories(query.keyword);
     return categories;
   }
 
@@ -40,6 +40,10 @@ class CategoryService {
       },
     });
     return category;
+  }
+
+  async deleteCategories(ids: string[]) {
+    return await categoryRepository.deleteCategories(ids);
   }
 }
 

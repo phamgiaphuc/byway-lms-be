@@ -60,13 +60,36 @@ class CategoryRepository {
     });
   }
 
-  async getCategories() {
+  async getCategories(keyword?: string) {
     return await prisma.category.findMany({
+      where: keyword
+        ? {
+            OR: [
+              { id: keyword },
+              {
+                name: {
+                  contains: keyword,
+                  mode: "insensitive",
+                },
+              },
+            ],
+          }
+        : undefined,
       include: {
         image: true,
       },
       omit: {
         imageId: true,
+      },
+    });
+  }
+
+  async deleteCategories(ids: string[]) {
+    return await prisma.category.deleteMany({
+      where: {
+        id: {
+          in: ids,
+        },
       },
     });
   }
