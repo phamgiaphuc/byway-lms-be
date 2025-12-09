@@ -24,7 +24,7 @@ model User {
   sessions Session[]
   courses  Course[]
 
-  @@map("users")
+  @@map("user")
 }
 
 model Account {
@@ -37,7 +37,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, providerId])
-  @@map("accounts")
+  @@map("account")
 }
 
 model Verification {
@@ -48,7 +48,7 @@ model Verification {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  @@map("verifications")
+  @@map("verification")
 }
 
 model Session {
@@ -61,7 +61,7 @@ model Session {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("sessions")
+  @@map("session")
 }
 
 model Category {
@@ -75,7 +75,7 @@ model Category {
 
   image File @relation(fields: [imageId], references: [id])
 
-  @@map("categories")
+  @@map("category")
 }
 
 model Course {
@@ -93,7 +93,7 @@ model Course {
   instructor       User             @relation(fields: [instructorId], references: [id], onDelete: Cascade)
   courseCategories CourseCategory[]
 
-  @@map("courses")
+  @@map("course")
 }
 
 model CourseCategory {
@@ -104,7 +104,7 @@ model CourseCategory {
   category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@unique([courseId, categoryId])
-  @@map("courses_categories")
+  @@map("course_category")
 }
 
 model File {
@@ -115,5 +115,5 @@ model File {
 
   categories Category[]
 
-  @@map("files")
+  @@map("file")
 }
