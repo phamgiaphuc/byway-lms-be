@@ -1,4 +1,5 @@
 import { categoryRepository } from "@/repository/category.repository";
+import { fileRepository } from "@/repository/file.repository";
 import { CreateCategorySchema, GetCategoriesSchema, UpdateCategoryByIdSchema } from "@/types/category";
 
 class CategoryService {
@@ -43,6 +44,12 @@ class CategoryService {
   }
 
   async deleteCategories(ids: string[]) {
+    const categories = await categoryRepository.getCategoriesByIds(ids);
+
+    const imageIds = categories.map((category) => category.image.id);
+
+    await fileRepository.deleteFiles(imageIds);
+
     return await categoryRepository.deleteCategories(ids);
   }
 }

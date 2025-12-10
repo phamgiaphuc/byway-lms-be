@@ -56,6 +56,8 @@ class AuthService {
 
     const user = await userRepository.updateUserVerifiedById(userId, true);
 
+    await userRepository.deleteVerificationById(verification.id);
+
     const token = jwt.sign({ id: user.id, email: user.email }, env.JWT_SECRET, { expiresIn: "7d" });
 
     return { user, token };
@@ -132,8 +134,6 @@ class AuthService {
   }
 
   async signIn(body: SignInBody) {
-    console.log(body);
-
     const user = await userRepository.findUserByEmail(body.email);
 
     if (!user) {

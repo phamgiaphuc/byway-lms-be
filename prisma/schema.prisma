@@ -23,6 +23,7 @@ model User {
   accounts Account[]
   sessions Session[]
   courses  Course[]
+  requests Request[]
 
   @@map("user")
 }
@@ -113,7 +114,18 @@ model File {
   ext  String
   url  String
 
-  categories Category[]
+  category Category[]
 
   @@map("file")
+}
+
+model Request {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  content   String
+  type      String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

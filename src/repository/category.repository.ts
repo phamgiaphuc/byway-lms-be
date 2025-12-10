@@ -60,6 +60,22 @@ class CategoryRepository {
     });
   }
 
+  async getCategoriesByIds(ids: string[]) {
+    return await prisma.category.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+      include: {
+        image: true,
+      },
+      omit: {
+        imageId: true,
+      },
+    });
+  }
+
   async getCategories(keyword?: string) {
     return await prisma.category.findMany({
       where: keyword
@@ -80,6 +96,9 @@ class CategoryRepository {
       },
       omit: {
         imageId: true,
+      },
+      orderBy: {
+        updatedAt: "desc",
       },
     });
   }

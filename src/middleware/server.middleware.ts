@@ -9,7 +9,7 @@ export const enableAppMiddleware = (server: Express) => {
   server.use(compression());
   server.use(
     cors({
-      origin: ["http://localhost:5173", "https://byway.acusdev.com"],
+      origin: ["http://localhost:5173", "http://localhost:4173", "https://byway.acusdev.com"],
     }),
   );
   server.use(passport.initialize());
