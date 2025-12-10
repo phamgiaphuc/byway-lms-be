@@ -52,5 +52,5 @@ pids/
 docker-data/
 .do
 
-generated/prisma
-src/lib/generated
+/generated/prisma
+/src/lib/generated
