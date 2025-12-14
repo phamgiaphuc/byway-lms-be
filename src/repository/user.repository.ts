@@ -31,6 +31,14 @@ class UserRepository {
     });
   }
 
+  async deleteVerificationById(id: string) {
+    return await prisma.verification.delete({
+      where: {
+        id: id,
+      },
+    });
+  }
+
   async findVerificationById(id: string) {
     return await prisma.verification.findUnique({
       where: {

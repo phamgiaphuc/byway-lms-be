@@ -17,6 +17,7 @@ export const env = createEnv({
     R2_BUCKET_NAME: z.string(),
     R2_ACCOUNT_ID: z.string(),
     R2_PUBLIC_DOMAIN: z.string().url(),
+    CLIENT_URL: z.string().default("http://localhost:5173"),
   },
   runtimeEnv: process.env,
 });

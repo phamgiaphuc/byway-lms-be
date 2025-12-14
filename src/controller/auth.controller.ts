@@ -1,4 +1,5 @@
 import { ApiResponse } from "@/lib/api-response";
+import { env } from "@/lib/env";
 import { authService } from "@/services/auth.service";
 import { SendVerification, PostVerification } from "@/types/auth";
 import { NextFunction, Request, Response } from "express";
@@ -47,7 +48,7 @@ class AuthController {
   async googleAuth(req: Request, res: Response, next: NextFunction) {
     try {
       const response = await authService.googleAuth(req.user as Profile["_json"]);
-      res.redirect(`http://localhost:5173/third-party?token=${response.token}`);
+      res.redirect(`${env.CLIENT_URL}/third-party?token=${response.token}`);
     } catch (error) {
       next(error);
     }
