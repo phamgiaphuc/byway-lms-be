@@ -84,15 +84,18 @@ model Course {
   instructorId String
   title        String
   description  String
-  image        String
+  imageId      String
+  level        String
   price        Float    @default(0)
   isFree       Boolean  @default(false)
   isPublished  Boolean  @default(false)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  instructor       User             @relation(fields: [instructorId], references: [id], onDelete: Cascade)
-  courseCategories CourseCategory[]
+  instructor User             @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+  image      File             @relation(fields: [imageId], references: [id])
+  categories CourseCategory[]
+  chapters   Chapter[]
 
   @@map("course")
 }
@@ -115,6 +118,7 @@ model File {
   url  String
 
   category Category[]
+  courses  Course[]
 
   @@map("file")
 }
@@ -133,4 +137,17 @@ model Request {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("request")
+}
+
+model Chapter {
+  id          String   @id @default(uuid())
+  title       String
+  courseId    String
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@map("chapter")
 }

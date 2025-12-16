@@ -1,11 +1,15 @@
 import { authRoutes } from "@/routes/auth.route";
 import { categoryRoutes } from "@/routes/category.route";
+import { courseRoutes } from "@/routes/course.route";
 import { fileRoutes } from "@/routes/file.route";
+import { instructorRoutes } from "@/routes/instructor.route";
 import { requestRoutes } from "@/routes/request.route";
 import { userRoutes } from "@/routes/users.route";
 import { authRoute } from "@/types/routes/auth.route";
 import { categoryRoute } from "@/types/routes/category.route";
+import { courseRoute } from "@/types/routes/course.route";
 import { filesRoute } from "@/types/routes/file.route";
+import { instructorRoute } from "@/types/routes/instructor.route";
 import { requestRoute } from "@/types/routes/request.route";
 import { Route } from "@/types/routes/route";
 import { usersRoute } from "@/types/routes/users.route";
@@ -33,6 +37,14 @@ const routes: Route[] = [
   {
     index: requestRoute.index,
     routes: requestRoutes,
+  },
+  {
+    index: courseRoute.index,
+    routes: courseRoutes,
+  },
+  {
+    index: instructorRoute.index,
+    routes: instructorRoutes,
   },
 ];
 
