@@ -165,12 +165,12 @@ model Lesson {
   position    Int
   isPublished Boolean  @default(false)
   type        String
-  videoId     String
+  videoId     String?
   content     String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  video       File         @relation(fields: [videoId], references: [id])
+  video       File?        @relation(fields: [videoId], references: [id])
   chapter     Chapter      @relation(fields: [chapterId], references: [id])
   userLessons UserLesson[]
 

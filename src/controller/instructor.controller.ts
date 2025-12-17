@@ -1,8 +1,9 @@
 import { ApiResponse } from "@/lib/api-response";
 import { instructorService } from "@/services/instructor.service";
 import { UserPayload } from "@/types/auth";
-import { CreateChapterSchema, GetChaptersSchema, UpdateChapterSchema } from "@/types/chapter";
+import { CreateChapterSchema, GetChapterByIdSchema, GetChaptersSchema, UpdateChapterSchema } from "@/types/chapter";
 import { GetCourseByIdSchema } from "@/types/course";
+import { CreateLessonSchema } from "@/types/lesson";
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
@@ -50,6 +51,16 @@ class InstructorController {
     }
   }
 
+  async getChapterById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const params = req.params as GetChapterByIdSchema["params"];
+      const chapter = await instructorService.getChapterById(params);
+      res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, { ...chapter }, "Get chapter successful"));
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async updateChapterById(req: Request, res: Response, next: NextFunction) {
     try {
       const user = req.user as UserPayload;
@@ -57,6 +68,16 @@ class InstructorController {
       const body = req.body as UpdateChapterSchema["body"];
       const chapter = await instructorService.updateChapterById(user, params.id, body);
       res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, { ...chapter }, "Update chapter successful"));
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async createLesson(req: Request, res: Response, next: NextFunction) {
+    try {
+      const body = req.body as CreateLessonSchema["body"];
+      const lesson = await instructorService.createLesson(body);
+      res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.CREATED, { ...lesson }, "Create lesson successful"));
     } catch (error) {
       next(error);
     }

@@ -15,7 +15,11 @@ class ChapterRepository {
         createdAt: "asc",
       },
       include: {
-        lessons: true,
+        lessons: {
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
       },
     });
   }

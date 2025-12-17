@@ -5,7 +5,10 @@ export interface InstructorRoute extends Omit<DefaultRoute, "default"> {
   getCourseById: string;
   createChapter: string;
   getChapters: string;
+  getChapterById: string;
   updateChapterById: string;
+  createLesson: string;
+  getLessonById: string;
 }
 
 export const instructorRoute: InstructorRoute = {
@@ -14,6 +17,9 @@ export const instructorRoute: InstructorRoute = {
   createChapter: "/chapters",
   getChapters: "/chapters",
   updateChapterById: "/chapters/:id",
+  getChapterById: "/chapters/:id",
+  createLesson: "/lessons",
+  getLessonById: "/lessons/:id",
   name: "Instructor",
   index: "/instructor",
   status: "/status",

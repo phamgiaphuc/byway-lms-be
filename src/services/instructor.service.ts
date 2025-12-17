@@ -1,8 +1,10 @@
 import { BadRequestError, NotFoundError } from "@/lib/api-error";
 import { chatperRepository } from "@/repository/chapter.repository";
 import { courseRepository } from "@/repository/course.repository";
+import { lessonRepository } from "@/repository/lesson.repository";
 import { UserPayload } from "@/types/auth";
-import { CreateChapterSchema, GetChaptersSchema, UpdateChapterSchema } from "@/types/chapter";
+import { CreateChapterSchema, GetChapterByIdSchema, GetChaptersSchema, UpdateChapterSchema } from "@/types/chapter";
+import { CreateLessonSchema } from "@/types/lesson";
 
 class InstructorService {
   async getCourses(user: UserPayload) {
@@ -51,6 +53,11 @@ class InstructorService {
     return chapters;
   }
 
+  async getChapterById(params: GetChapterByIdSchema["params"]) {
+    const chapter = await chatperRepository.getChapterById(params.id);
+    return chapter;
+  }
+
   async updateChapterById(user: UserPayload, id: string, body: UpdateChapterSchema["body"]) {
     const chapter = await chatperRepository.getChapterById(id);
     if (!chapter) {
@@ -63,6 +70,32 @@ class InstructorService {
       title: body.title,
       isPublished: body.isPublished,
     });
+  }
+
+  async createLesson(body: CreateLessonSchema["body"]) {
+    const { title, description, video, position, type, content, chapterId } = body;
+    const lesson = await lessonRepository.createLesson({
+      title: title,
+      description: description,
+      position: position,
+      type: type,
+      content: content,
+      chapter: {
+        connect: {
+          id: chapterId,
+        },
+      },
+      ...(video && {
+        video: {
+          create: {
+            ext: video.ext,
+            name: video.name,
+            url: video.url,
+          },
+        },
+      }),
+    });
+    return lesson;
   }
 }
 
