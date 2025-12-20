@@ -3,8 +3,14 @@ import { chatperRepository } from "@/repository/chapter.repository";
 import { courseRepository } from "@/repository/course.repository";
 import { lessonRepository } from "@/repository/lesson.repository";
 import { UserPayload } from "@/types/auth";
-import { CreateChapterSchema, GetChapterByIdSchema, GetChaptersSchema, UpdateChapterSchema } from "@/types/chapter";
-import { CreateLessonSchema } from "@/types/lesson";
+import {
+  CreateChapterSchema,
+  DeleteChapterByIdSchema,
+  GetChapterByIdSchema,
+  GetChaptersSchema,
+  UpdateChapterSchema,
+} from "@/types/chapter";
+import { CreateLessonSchema, DeleteLessonByIdSchema } from "@/types/lesson";
 
 class InstructorService {
   async getCourses(user: UserPayload) {
@@ -58,13 +64,32 @@ class InstructorService {
     return chapter;
   }
 
+  async deleteChapterById(params: DeleteChapterByIdSchema["params"], user: UserPayload) {
+    const chapter = await chatperRepository.getChapterById(params.id);
+    if (!chapter) {
+      throw new NotFoundError("Chapter not found");
+    }
+    const course = await courseRepository.getCourseById(chapter.courseId);
+    if (!course) {
+      throw new NotFoundError("Course not found");
+    }
+    if (course.instructorId !== user.id) {
+      throw new BadRequestError("Delete is not allowed");
+    }
+    return await chatperRepository.deleteChapterById(chapter.id);
+  }
+
   async updateChapterById(user: UserPayload, id: string, body: UpdateChapterSchema["body"]) {
     const chapter = await chatperRepository.getChapterById(id);
     if (!chapter) {
       throw new NotFoundError("Chapter not found");
     }
-    if (chapter.course.instructorId !== user.id) {
-      throw new BadRequestError("Chapter is not allowed");
+    const course = await courseRepository.getCourseById(chapter.courseId);
+    if (!course) {
+      throw new NotFoundError("Course not found");
+    }
+    if (course.instructorId !== user.id) {
+      throw new BadRequestError("Update is not allowed");
     }
     return await chatperRepository.updateChapterById(id, {
       title: body.title,
@@ -96,6 +121,25 @@ class InstructorService {
       }),
     });
     return lesson;
+  }
+
+  async deleteLessonById(params: DeleteLessonByIdSchema["params"], user: UserPayload) {
+    const lesson = await lessonRepository.getLessonById(params.id);
+    if (!lesson) {
+      throw new NotFoundError("Lesson not found");
+    }
+    const chapter = await chatperRepository.getChapterById(lesson.chapterId);
+    if (!chapter) {
+      throw new NotFoundError("Chapter not found");
+    }
+    const course = await courseRepository.getCourseById(chapter.courseId);
+    if (!course) {
+      throw new NotFoundError("Course not found");
+    }
+    if (course.instructorId !== user.id) {
+      throw new BadRequestError("Delete is not allowed");
+    }
+    return await lessonRepository.deleteLessonById(lesson.id);
   }
 }
 

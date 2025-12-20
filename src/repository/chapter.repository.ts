@@ -29,9 +29,6 @@ class ChapterRepository {
       where: {
         id,
       },
-      include: {
-        course: true,
-      },
     });
   }
 
@@ -41,6 +38,14 @@ class ChapterRepository {
         id,
       },
       data: chapter,
+    });
+  }
+
+  async deleteChapterById(id: string) {
+    return await prisma.chapter.delete({
+      where: {
+        id,
+      },
     });
   }
 }

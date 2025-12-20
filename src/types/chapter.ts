@@ -30,6 +30,12 @@ export const updateChapterSchema = z.object({
   }),
 });
 
+export const deleteChapterByIdSchema = z.object({
+  params: z.object({
+    id: z.uuid(),
+  }),
+});
+
 export type CreateChapterSchema = z.infer<typeof createChapterSchema>;
 
 export type GetChaptersSchema = z.infer<typeof getChaptersSchema>;
@@ -37,3 +43,5 @@ export type GetChaptersSchema = z.infer<typeof getChaptersSchema>;
 export type UpdateChapterSchema = z.infer<typeof updateChapterSchema>;
 
 export type GetChapterByIdSchema = z.infer<typeof getChapterByIdSchema>;
+
+export type DeleteChapterByIdSchema = z.infer<typeof deleteChapterByIdSchema>;

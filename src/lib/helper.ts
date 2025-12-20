@@ -19,3 +19,5 @@ export function generateSlug(input: string): string {
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-");
 }
+
+export const normalizeArray = <T>(val?: T | T[]) => (val ? (Array.isArray(val) ? val : [val]) : undefined);

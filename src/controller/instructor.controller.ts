@@ -1,9 +1,15 @@
 import { ApiResponse } from "@/lib/api-response";
 import { instructorService } from "@/services/instructor.service";
 import { UserPayload } from "@/types/auth";
-import { CreateChapterSchema, GetChapterByIdSchema, GetChaptersSchema, UpdateChapterSchema } from "@/types/chapter";
+import {
+  CreateChapterSchema,
+  DeleteChapterByIdSchema,
+  GetChapterByIdSchema,
+  GetChaptersSchema,
+  UpdateChapterSchema,
+} from "@/types/chapter";
 import { GetCourseByIdSchema } from "@/types/course";
-import { CreateLessonSchema } from "@/types/lesson";
+import { CreateLessonSchema, DeleteLessonByIdSchema } from "@/types/lesson";
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
@@ -73,11 +79,33 @@ class InstructorController {
     }
   }
 
+  async deleteChapterById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user as UserPayload;
+      const params = req.params as DeleteChapterByIdSchema["params"];
+      await instructorService.deleteChapterById(params, user);
+      res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, {}, "Delete chapter successful"));
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async createLesson(req: Request, res: Response, next: NextFunction) {
     try {
       const body = req.body as CreateLessonSchema["body"];
       const lesson = await instructorService.createLesson(body);
       res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.CREATED, { ...lesson }, "Create lesson successful"));
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteLessonById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = req.user as UserPayload;
+      const params = req.params as DeleteLessonByIdSchema["params"];
+      await instructorService.deleteLessonById(params, user);
+      res.status(StatusCodes.OK).json(new ApiResponse(StatusCodes.OK, {}, "Delete lesson successful"));
     } catch (error) {
       next(error);
     }

@@ -2,6 +2,8 @@ import { LessonCreateInput } from "@/lib/generated/prisma/models";
 import { prisma } from "@/lib/prisma";
 
 class LessonRepository {
+  async getLessons() {}
+
   async createLesson(lesson: LessonCreateInput) {
     return await prisma.lesson.create({
       data: lesson,
@@ -18,6 +20,14 @@ class LessonRepository {
       },
       include: {
         video: true,
+      },
+    });
+  }
+
+  async deleteLessonById(id: string) {
+    return await prisma.lesson.delete({
+      where: {
+        id,
       },
     });
   }

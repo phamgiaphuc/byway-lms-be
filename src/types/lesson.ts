@@ -14,4 +14,12 @@ export const createLessonSchema = z.object({
   }),
 });
 
+export const deleteLessonByIdSchema = z.object({
+  params: z.object({
+    id: z.uuid(),
+  }),
+});
+
 export type CreateLessonSchema = z.infer<typeof createLessonSchema>;
+
+export type DeleteLessonByIdSchema = z.infer<typeof deleteLessonByIdSchema>;

@@ -1,11 +1,15 @@
+import { NotFoundError } from "@/lib/api-error";
+import { CourseWhereInput } from "@/lib/generated/prisma/models";
+import { normalizeArray } from "@/lib/helper";
 import { courseRepository } from "@/repository/course.repository";
-import { CreateCourseSchema } from "@/types/course";
+import { CreateCourseSchema, GetCourseByIdSchema, GetCoursesSchema } from "@/types/course";
 
 export class CourseService {
   async createCourse(body: CreateCourseSchema["body"], userId: string) {
-    const { title, description, level, isFree, isPublished, price, image, categoryIds } = body;
+    const { title, description, level, isFree, isPublished, price, image, categoryIds, subtitle } = body;
     const course = await courseRepository.createCourse({
       title: title,
+      subtitle: subtitle,
       description: description,
       image: {
         create: {
@@ -30,6 +34,63 @@ export class CourseService {
       },
     });
     return course;
+  }
+
+  async getCourseById(params: GetCourseByIdSchema["params"]) {
+    const course = await courseRepository.getPublishedCourseById(params.id);
+    if (!course) {
+      throw new NotFoundError("Course not found");
+    }
+    return {
+      ...course,
+      categories: course.categories.map((c) => c.category),
+    };
+  }
+
+  async getCourses(query: GetCoursesSchema["query"]) {
+    const categoryIds = normalizeArray(query.categoryIds);
+    const prices = normalizeArray(query.prices);
+    const priceFilters: CourseWhereInput[] =
+      prices
+        ?.map((price): CourseWhereInput | null => {
+          switch (price) {
+            case "free":
+              return { price: 0 };
+
+            case "under-20":
+              return { price: { lt: 20 } };
+
+            case "20-50":
+              return { price: { gte: 20, lte: 50 } };
+
+            case "50-100":
+              return { price: { gte: 50, lte: 100 } };
+
+            case "over-100":
+              return { price: { gt: 100 } };
+
+            default:
+              return null;
+          }
+        })
+        .filter((f): f is CourseWhereInput => f !== null) ?? [];
+    const courses = await courseRepository.getCourses({
+      isPublished: true,
+      ...(categoryIds && {
+        categories: {
+          some: {
+            categoryId: { in: categoryIds },
+          },
+        },
+      }),
+      ...(priceFilters.length && {
+        OR: priceFilters,
+      }),
+    });
+    return courses.map((course) => ({
+      ...course,
+      categories: course.categories.map((c) => c.category),
+    }));
   }
 }
 

@@ -1,7 +1,23 @@
-import { CourseCreateInput } from "@/lib/generated/prisma/models";
+import { CourseCreateInput, CourseWhereInput } from "@/lib/generated/prisma/models";
 import { prisma } from "@/lib/prisma";
 
 class CourseRepository {
+  async getCourses(where: CourseWhereInput) {
+    return await prisma.course.findMany({
+      where: where,
+      include: {
+        image: true,
+        instructor: true,
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+        chapters: true,
+      },
+    });
+  }
+
   async getCourseById(id: string) {
     return await prisma.course.findUnique({
       where: {
@@ -14,7 +30,41 @@ class CourseRepository {
             category: true,
           },
         },
-        chapters: true,
+        chapters: {
+          include: {
+            lessons: true,
+          },
+        },
+      },
+    });
+  }
+
+  async getPublishedCourseById(id: string) {
+    return await prisma.course.findUnique({
+      where: {
+        id: id,
+        isPublished: true,
+      },
+      include: {
+        image: true,
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+        chapters: {
+          where: {
+            isPublished: true,
+          },
+          include: {
+            lessons: {
+              where: {
+                isPublished: true,
+              },
+            },
+          },
+        },
+        instructor: true,
       },
     });
   }

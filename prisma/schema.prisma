@@ -85,6 +85,7 @@ model Course {
   id           String   @id @default(uuid())
   instructorId String
   title        String
+  subtitle     String?
   description  String
   imageId      String
   level        String
