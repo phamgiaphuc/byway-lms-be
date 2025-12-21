@@ -11,6 +11,8 @@ import { Router } from "express";
  */
 const router = Router();
 
+router.use(jwtMiddleware());
+
 /**
  * @swagger
  * /users/me:
@@ -41,6 +43,10 @@ const router = Router();
  *       401:
  *         description: Unauthorized - missing or invalid token
  */
-router.get(usersRoute.getMe, jwtMiddleware(), userController.getUserProfile);
+router.get(usersRoute.getMe, userController.getUserProfile);
+
+router.post(usersRoute.enrollCourse, userController.enrollCourse);
+
+router.get(usersRoute.getMyCourses, userController.getMyCourses);
 
 export const userRoutes = router;
