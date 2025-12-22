@@ -7,7 +7,7 @@ passport.use(
     {
       clientID: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/api/auth/google/callback",
+      callbackURL: env.GOOGLE_CALLBACK_URL,
     },
     function (accessToken, refreshToken, profile, done) {
       const { _json } = profile;
