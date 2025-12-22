@@ -49,4 +49,10 @@ router.post(usersRoute.enrollCourse, userController.enrollCourse);
 
 router.get(usersRoute.getMyCourses, userController.getMyCourses);
 
+router.get(usersRoute.getMyLessons, userController.getMyLessons);
+
+router.post(usersRoute.completeLesson, userController.completeLesson);
+
+router.get(usersRoute.getMyRequests, userController.getMyRequests);
+
 export const userRoutes = router;

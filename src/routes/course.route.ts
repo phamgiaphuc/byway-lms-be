@@ -2,7 +2,7 @@ import { courseController } from "@/controller/course.controller";
 import { jwtMiddleware } from "@/middleware/auth.middleware";
 import { roleMiddleware } from "@/middleware/role.middleware";
 import { schemaValidation } from "@/middleware/validation.middleware";
-import { createCourseSchema, getCourseByIdSchema } from "@/types/course";
+import { createCourseSchema, getCourseByIdSchema, updateCourseByIdSchema } from "@/types/course";
 import { courseRoute } from "@/types/routes/course.route";
 import { Router } from "express";
 
@@ -16,6 +16,14 @@ router.post(
   roleMiddleware(["admin", "instructor"]),
   schemaValidation(createCourseSchema),
   courseController.createCourse,
+);
+
+router.put(
+  courseRoute.updateCourseById,
+  jwtMiddleware(),
+  roleMiddleware(["admin", "instructor"]),
+  schemaValidation(updateCourseByIdSchema),
+  courseController.updateCourseById,
 );
 
 router.get(courseRoute.getCourseById, schemaValidation(getCourseByIdSchema), courseController.getCourseById);

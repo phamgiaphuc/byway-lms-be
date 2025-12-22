@@ -5,12 +5,18 @@ export interface UsersRoute extends DefaultRoute {
   getMe: string;
   enrollCourse: string;
   getMyCourses: string;
+  getMyLessons: string;
+  completeLesson: string;
+  getMyRequests: string;
 }
 
 export const usersRoute: UsersRoute = {
   getUsers: "/",
   enrollCourse: "/courses/:courseId/enroll",
   getMyCourses: "/me/courses",
+  getMyLessons: "/me/lessons",
+  completeLesson: "/lessons/complete",
+  getMyRequests: "/me/requests",
   name: "Users",
   index: "/users",
   default: "/",

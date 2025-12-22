@@ -2,7 +2,26 @@ import { LessonCreateInput } from "@/lib/generated/prisma/models";
 import { prisma } from "@/lib/prisma";
 
 class LessonRepository {
-  async getLessons() {}
+  async getLessons(courseId: string) {
+    return await prisma.chapter.findMany({
+      where: {
+        courseId: courseId,
+      },
+      include: {
+        lessons: {
+          include: {
+            video: true,
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
+  }
 
   async createLesson(lesson: LessonCreateInput) {
     return await prisma.lesson.create({

@@ -24,7 +24,7 @@ class InstructorService {
   }
 
   async getCourseById(user: UserPayload, id: string) {
-    const course = await courseRepository.getCourseById(id);
+    const course = await courseRepository.getCourseById(id, false);
     if (!course) {
       throw new NotFoundError("Course not found");
     }
@@ -98,10 +98,11 @@ class InstructorService {
   }
 
   async createLesson(body: CreateLessonSchema["body"]) {
-    const { title, description, video, position, type, content, chapterId } = body;
+    const { title, description, video, position, type, content, chapterId, isPublished } = body;
     const lesson = await lessonRepository.createLesson({
       title: title,
       description: description,
+      isPublished: isPublished,
       position: position,
       type: type,
       content: content,

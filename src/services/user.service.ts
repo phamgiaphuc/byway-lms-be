@@ -38,13 +38,9 @@ class UserService {
   }
 
   async getMyCourses(userId: string) {
-    return prisma.userCourse.findMany({
-      where: {
-        userId,
-      },
-      orderBy: {
-        enrolledAt: "desc",
-      },
+    const data = await prisma.userCourse.findMany({
+      where: { userId },
+      orderBy: { enrolledAt: "desc" },
       include: {
         course: {
           include: {
@@ -56,8 +52,100 @@ class UserService {
                 image: true,
               },
             },
+            categories: {
+              include: {
+                category: true,
+              },
+            },
           },
         },
+      },
+    });
+
+    return Promise.all(
+      data.map(async (c) => {
+        const lesson = await prisma.lesson.findFirst({
+          where: {
+            chapter: {
+              courseId: c.courseId,
+            },
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+          select: {
+            id: true,
+          },
+        });
+        return {
+          ...c,
+          course: {
+            ...c.course,
+            categories: c.course.categories.map((c) => c.category),
+          },
+          lessonId: lesson?.id ?? null,
+        };
+      }),
+    );
+  }
+
+  async getMyLessons(userId: string, courseId: string) {
+    const userCourse = await prisma.userCourse.findUnique({
+      where: {
+        userId_courseId: {
+          userId,
+          courseId,
+        },
+      },
+    });
+    if (!userCourse) {
+      throw new NotFoundError("User course not found");
+    }
+    const lessons = await prisma.userLesson.findMany({
+      where: {
+        userCourseId: userCourse.id,
+      },
+    });
+    return lessons;
+  }
+
+  async completeLesson(lessonId: string, courseId: string, userId: string) {
+    const userCourse = await prisma.userCourse.findUnique({
+      where: {
+        userId_courseId: {
+          userId,
+          courseId,
+        },
+      },
+    });
+    if (!userCourse) {
+      throw new NotFoundError("User course not found");
+    }
+    let userLesson = await prisma.userLesson.findUnique({
+      where: {
+        userCourseId_lessonId: {
+          userCourseId: userCourse.id,
+          lessonId: lessonId,
+        },
+      },
+    });
+    if (!userLesson) {
+      userLesson = await prisma.userLesson.create({
+        data: {
+          userCourseId: userCourse.id,
+          lessonId: lessonId,
+          isCompleted: true,
+          progress: 100,
+        },
+      });
+    }
+    return userLesson;
+  }
+
+  async getMyRequests(userId: string) {
+    return await prisma.request.findMany({
+      where: {
+        userId,
       },
     });
   }

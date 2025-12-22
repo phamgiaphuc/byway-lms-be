@@ -2,7 +2,7 @@ import { NotFoundError } from "@/lib/api-error";
 import { CourseWhereInput } from "@/lib/generated/prisma/models";
 import { normalizeArray } from "@/lib/helper";
 import { courseRepository } from "@/repository/course.repository";
-import { CreateCourseSchema, GetCourseByIdSchema, GetCoursesSchema } from "@/types/course";
+import { CreateCourseSchema, GetCourseByIdSchema, GetCoursesSchema, UpdateCourseByIdSchema } from "@/types/course";
 
 export class CourseService {
   async createCourse(body: CreateCourseSchema["body"], userId: string) {
@@ -36,8 +36,42 @@ export class CourseService {
     return course;
   }
 
-  async getCourseById(params: GetCourseByIdSchema["params"]) {
-    const course = await courseRepository.getPublishedCourseById(params.id);
+  async updateCourseById(body: UpdateCourseByIdSchema["body"], courseId: string) {
+    const { title, description, level, isFree, isPublished, price, image, categoryIds, subtitle } = body;
+    return await courseRepository.updateCourseById(
+      {
+        title: title,
+        subtitle: subtitle,
+        description: description,
+        image: {
+          update: {
+            where: { id: image.id },
+            data: {
+              ext: image.ext,
+              name: image.name,
+              url: image.url,
+            },
+          },
+        },
+        level: level,
+        isFree: isFree,
+        isPublished: isPublished,
+        price: price,
+        categories: {
+          set: categoryIds.map((id) => ({
+            courseId_categoryId: {
+              courseId,
+              categoryId: id,
+            },
+          })),
+        },
+      },
+      courseId,
+    );
+  }
+
+  async getCourseById(params: GetCourseByIdSchema["params"], query: GetCourseByIdSchema["query"]) {
+    const course = await courseRepository.getPublishedCourseById(params.id, query.detail);
     if (!course) {
       throw new NotFoundError("Course not found");
     }
