@@ -4,5 +4,9 @@ services:
     image: phamgiaphuc/byway-be:1.0.0
     env_file:
       - .env
-    expose:
-      - "8000"
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true
