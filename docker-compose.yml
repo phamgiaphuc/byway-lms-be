@@ -4,5 +4,5 @@ services:
     image: phamgiaphuc/byway-be:1.0.0
     env_file:
       - .env
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
